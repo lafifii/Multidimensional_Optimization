@@ -99,12 +99,13 @@ leximax <- function(data, columnas, top){
   returnValue(head(data_, top))
 }
 
-setwd("C:/Users/Fiorella/Documents")
-data = read.csv("data2.csv", sep=",", header = TRUE, stringsAsFactors = FALSE, 
+setwd("C:/Users/Fiorella/Documents/T2-AI")
+data = read.csv("cwurData.csv", sep=",", header = TRUE, stringsAsFactors = FALSE, 
                 na.strings=c("","NA"))
 
-columnas = c(3,4,5)
-pesos = c(1,2,3)
+columnas = c(seq(5,10),12,13) 
+pesos = floor(runif(length(columnas), min= 1, max=101))
+print(pesos)
 data = normalizar(data,columnas)
 data_maximin = maximin(data,columnas,6)
 data_minimax = minimax(data,columnas,10)
