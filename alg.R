@@ -1,9 +1,11 @@
+
 normalizar <- function(data, columnas){
   for(i in columnas){
     data[, i] = (data[, i] - min(data[,i]))/(max(data[,i]) - min(data[,i]))
   }
   returnValue(data)
 }
+
 maximin <- function(data, columnas,top){
   data_ = data
   fil = length(data[,1]) 
@@ -19,6 +21,7 @@ maximin <- function(data, columnas,top){
   data_ = data_[with(data_, order(-minimos) ),]
   returnValue(head(data_, top))
 }
+
 minimax <- function(data, columnas, top){
   data_ = data
   fil = length(data[,1]) 
@@ -34,6 +37,7 @@ minimax <- function(data, columnas, top){
   data_ = data_[with(data_, order(maximos) ),]
   returnValue(head(data_, top))
 }
+
 weighted_average <- function(data, pesos, columnas, top){
   data_ = data
   fil = length(data[,1]) 
@@ -52,6 +56,7 @@ weighted_average <- function(data, pesos, columnas, top){
   data_ = data_[with(data_, order(-weight) ),]
   returnValue(head(data_, top))
 }
+
 leximin <- function(data, columnas, top){
   data_ = data
   fil = length(data[,1]) 
@@ -75,6 +80,7 @@ leximin <- function(data, columnas, top){
   data_ = data_[with(data_, order(-com) ),]
   returnValue(head(data_, top))
 }
+
 leximax <- function(data, columnas, top){
   data_ = data
   fil = length(data[,1]) 
@@ -99,7 +105,69 @@ leximax <- function(data, columnas, top){
   returnValue(head(data_, top))
 }
 
-setwd("C:/Users/Fiorella/Documents/T2-AI")
+ParetoDomina <- function(a, b) {
+  
+  mi = 0
+  my = 0
+  for(i in 1:length(a)) {
+    if (a[i] >= b[i]) {
+      mi = mi + 1
+    }
+    if (a[i] > b[i]) {
+      my = my + 1
+    }
+  }
+  
+  if (mi == length(a)) {
+    if (my > 0) {
+      returnValue(TRUE)
+    }
+  }
+  returnValue(FALSE)
+}
+
+skylines <- function(data, l) {
+  
+  df = data
+  t = length(data[,1]) 
+  columns = colnames(data)
+  
+  for (i in 1:t) {
+    
+    if ((colnames(data[0,][i]) %in% colnames(df))) {
+      
+      a = array(data = 0, dim = length(l))
+      for (j in (i+1):t) {
+        
+        if (colnames(data[0,][j]) %in% colnames(df)) {
+          
+          b = array(data = 0, dim = length(l))
+          for (k in 1:length(l)) {
+            # columns[l[k]] -> l[k]
+            a[k] = df[l[k], i]
+            b[k] = df[l[k], j]
+          }
+          
+          if (ParetoDomina(a, b)) {
+            df[j] <- NULL
+            # df = df.drop(j)
+          }
+          else if (ParetoDomina(b, a)) {
+            df[i] <- NULL
+            # df = df.drop(i)
+            break
+          }
+        }
+      }
+    }
+  }
+  returnValue(df)
+}
+
+
+setwd("C:/Users/user/Documents/Optimizacion_Multidimensional")
+# setwd("C:/Users/Fiorella/Documents/T2-AI")
+
 data = read.csv("cwurData.csv", sep=",", header = TRUE, stringsAsFactors = FALSE, 
                 na.strings=c("","NA"))
 
@@ -112,3 +180,4 @@ data_minimax = minimax(data,columnas,10)
 data_wa = weighted_average(data, pesos, columnas, 8)
 data_leximin = leximin(data, columnas, 5)
 data_leximax = leximin(data, columnas, 5)
+data_skylines = skylines(data, columnas)
