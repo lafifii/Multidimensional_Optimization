@@ -105,7 +105,7 @@ data = read.csv("cwurData.csv", sep=",", header = TRUE, stringsAsFactors = FALSE
 
 columnas = c(seq(5,10),12,13) 
 pesos = floor(runif(length(columnas), min= 1, max=101))
-print(pesos)
+
 data = normalizar(data,columnas)
 data_maximin = maximin(data,columnas,6)
 data_minimax = minimax(data,columnas,10)
