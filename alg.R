@@ -69,16 +69,14 @@ leximin <- function(data, columnas, top) {
       aux[id] = data[i, j]
       id = id + 1
     }
-    sort(aux)
+    aux = aux[order(aux)]
     pesos[i,] = aux
   }
-  com = matrix(0, col, fil)
   for (i in 1:col) {
-    com[i,] = pesos[, i]
-    data_[paste("V", as.character(i))] = com[i]
+    data_[paste("V", as.character(i))] = pesos[, i]
   }
-  data_ = data_[with(data_, order(-com)),]
-  returnValue(head(data_, top))
+  data_ = data_[order(pesos[,1:col]),]
+  returnValue(data_)
 }
 
 leximax <- function(data, columnas, top) {
@@ -93,16 +91,14 @@ leximax <- function(data, columnas, top) {
       aux[id] = data[i, j]
       id = id + 1
     }
-    sort(-aux)
+    aux = aux[order(-aux)]
     pesos[i,] = aux
   }
-  com = matrix(0, col, fil)
   for (i in 1:col) {
-    com[i,] = pesos[, i]
-    data_[paste("V", as.character(i))] = com[i]
+    data_[paste("V", as.character(i))] = pesos[, i]
   }
-  data_ = data_[with(data_, order(com)),]
-  returnValue(head(data_, top))
+  #data_ = data_[order(pesos[,1:col]),]
+  returnValue(data_)
 }
 
 ParetoDomina <- function(a, b) {
@@ -131,9 +127,6 @@ skylines <- function(data, l) {
     df[i,]$idx = i
   }
   for (i in 1:t) {
-    if( i%%100 == 0) {
-      print(i/t)
-    }
     if ( any(df$idx==i) ) {
       a = array(data = 0, dim = length(l))
       for (j in (i + 1):t) {
@@ -164,7 +157,9 @@ skylines <- function(data, l) {
 }
 
 
-setwd("C:/Users/user/Documents/Optimizacion_Multidimensional")
+
+setwd("C:/Users/Proyecto/Downloads/Optimizacion_Multidimensional-master")
+# setwd("C:/Users/user/Documents/Optimizacion_Multidimensional")
 # setwd("C:/Users/Fiorella/Documents/T2-AI")
 
 data = read.csv(
@@ -183,5 +178,5 @@ data_maximin = maximin(data, columnas, 6)
 data_minimax = minimax(data, columnas, 10)
 data_wa = weighted_average(data, pesos, columnas, 8)
 data_leximin = leximin(data, columnas, 5)
-data_leximax = leximin(data, columnas, 5)
-data_skylines = skylines(data, c(5, 6, 7))
+data_leximax = leximax(data, columnas, 5)
+# data_skylines = skylines(data, c(4, 13))
