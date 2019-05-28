@@ -1,4 +1,3 @@
-
 normalizar <- function(data, columnas) {
   for (i in columnas) {
     data[, i] = (data[, i] - min(data[, i])) / (max(data[, i]) - min(data[, i]))
@@ -7,7 +6,7 @@ normalizar <- function(data, columnas) {
 }
 
 maximin <- function(data, columnas, top) {
-  data_ = data
+  data_ = data.frame(data)
   fil = length(data[, 1])
   minimos = c(0, fil)
   for (i in 1:fil) {
@@ -19,11 +18,11 @@ maximin <- function(data, columnas, top) {
   }
   data_['MV'] = minimos
   data_ = data_[with(data_, order(-minimos)),]
-  returnValue(head(data_, top))
+  returnValue(head(data_ , top))
 }
 
 minimax <- function(data, columnas, top) {
-  data_ = data
+  data_ = data.frame(data)
   fil = length(data[, 1])
   maximos = c(0, fil)
   for (i in 1:fil) {
@@ -35,11 +34,11 @@ minimax <- function(data, columnas, top) {
   }
   data_['MX'] = maximos
   data_ = data_[with(data_, order(maximos)),]
-  returnValue(head(data_, top))
+  returnValue(head(data_ , top))
 }
 
 weighted_average <- function(data, pesos, columnas, top) {
-  data_ = data
+  data_ = data.frame(data)
   fil = length(data[, 1])
   weight = c(0, fil)
   suma = sum(pesos)
@@ -54,11 +53,11 @@ weighted_average <- function(data, pesos, columnas, top) {
   }
   data_['Weight'] = weight
   data_ = data_[with(data_, order(-weight)),]
-  returnValue(head(data_, top))
+  returnValue(head(data_ , top))
 }
 
 leximin <- function(data, columnas, top) {
-  data_ = data
+  data_ = data.frame(data)
   fil = length(data[, 1])
   col = length(columnas)
   pesos = matrix(0, fil, col)
@@ -72,15 +71,16 @@ leximin <- function(data, columnas, top) {
     aux = aux[order(aux)]
     pesos[i,] = aux
   }
-  for (i in 1:col) {
-    data_[paste("V", as.character(i))] = pesos[, i]
+  for(i in 1:col){
+    data_[paste("v" , as.character(i))] = pesos[,i]
   }
-  data_ = data_[order(pesos[,1:col]),]
-  returnValue(data_)
+  data_ = data_[with(data_, order(-pesos[,1], -pesos[,2], -pesos[,3], -pesos[,4], -pesos[,5],-pesos[,6]
+                                  , -pesos[,7], -pesos[,8], -pesos[,9])),]
+  returnValue(head(data_ , top))
 }
 
 leximax <- function(data, columnas, top) {
-  data_ = data
+  data_ = data.frame(data)
   fil = length(data[, 1])
   col = length(columnas)
   pesos = matrix(0, fil, col)
@@ -94,11 +94,13 @@ leximax <- function(data, columnas, top) {
     aux = aux[order(-aux)]
     pesos[i,] = aux
   }
-  for (i in 1:col) {
-    data_[paste("V", as.character(i))] = pesos[, i]
+  for(i in 1:col){
+    data_[paste("v" , as.character(i))] = pesos[,i]
   }
-  #data_ = data_[order(pesos[,1:col]),]
-  returnValue(data_)
+  data_ = data_[with(data_, order(-pesos[,1], -pesos[,2], -pesos[,3], -pesos[,4], -pesos[,5],-pesos[,6]
+                                  , -pesos[,7], -pesos[,8], -pesos[,9])),]
+  returnValue(head(data_ , top))
+  
 }
 
 ParetoDomina <- function(a, b) {
@@ -158,9 +160,9 @@ skylines <- function(data, l) {
 
 
 
-setwd("C:/Users/Proyecto/Downloads/Optimizacion_Multidimensional-master")
+##setwd("C:/Users/Proyecto/Downloads/Optimizacion_Multidimensional-master")
 # setwd("C:/Users/user/Documents/Optimizacion_Multidimensional")
-# setwd("C:/Users/Fiorella/Documents/T2-AI")
+setwd("C:/Users/Fiorella/Documents/T2-AI")
 
 data = read.csv(
   "cwurData.csv",
@@ -177,6 +179,7 @@ data = normalizar(data, columnas)
 data_maximin = maximin(data, columnas, 6)
 data_minimax = minimax(data, columnas, 10)
 data_wa = weighted_average(data, pesos, columnas, 8)
+
 data_leximin = leximin(data, columnas, 5)
 data_leximax = leximax(data, columnas, 5)
-# data_skylines = skylines(data, c(4, 13))
+data_skylines = skylines(data, c(4, 13))
