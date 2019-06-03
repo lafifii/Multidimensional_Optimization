@@ -121,7 +121,7 @@ ParetoDomina <- function(a, b) {
   return(FALSE)
 }
 
-skylines <- function(data, l) {
+skylines <- function(data, l, top) {
   df = data
   df$idx <- 0
   t = length(data[, 1])
@@ -155,14 +155,14 @@ skylines <- function(data, l) {
       }
     }
   }
-  returnValue(df)
+  returnValue(head(df , top))
 }
 
 
 
-##setwd("C:/Users/Proyecto/Downloads/Optimizacion_Multidimensional-master")
+setwd("C:/Users/operador/Downloads")
 # setwd("C:/Users/user/Documents/Optimizacion_Multidimensional")
-setwd("C:/Users/Fiorella/Documents/T2-AI")
+# setwd("C:/Users/Fiorella/Documents/T2-AI")
 
 data = read.csv(
   "cwurData.csv",
@@ -174,12 +174,13 @@ data = read.csv(
 
 columnas = c(seq(4, 10), 12, 13)
 pesos = floor(runif(length(columnas), min = 1, max = 101))
+fil = 100
 
 data = normalizar(data, columnas)
-data_maximin = maximin(data, columnas, 6)
-data_minimax = minimax(data, columnas, 10)
-data_wa = weighted_average(data, pesos, columnas, 8)
+data_maximin = maximin(data, columnas, 20)
+data_minimax = minimax(data, columnas, 20)
+data_wa = weighted_average(data, pesos, columnas, 20)
 
-data_leximin = leximin(data, columnas, 5)
-data_leximax = leximax(data, columnas, 5)
-data_skylines = skylines(data, c(4, 13))
+data_leximin = leximin(data, columnas, 20)
+data_leximax = leximax(data, columnas, 20)
+data_skylines = skylines(data, columnas, 20)
